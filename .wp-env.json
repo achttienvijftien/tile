@@ -1,0 +1,7 @@
+{
+  "phpVersion": "8.0",
+  "themes": ["./test/fixtures/theme"],
+  "mappings": {
+    "tile": "."
+  }
+}

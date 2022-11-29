@@ -1,0 +1,36 @@
+{
+  "name": "achttienvijftien/tile",
+  "description": "Use twig in your WordPress themes",
+  "type": "library",
+  "require-dev": {
+    "achttienvijftien/building-techniques": "dev-main",
+    "dealerdirect/phpcodesniffer-composer-installer": "*",
+    "phpcompatibility/phpcompatibility-wp": "*"
+  },
+  "license": "GPL-3.0-or-later",
+  "autoload": {
+    "psr-4": {
+      "AchttienVijftien\\Tile\\": "src/"
+    }
+  },
+  "scripts": {
+    "format": "phpcbf --report-summary --report-source",
+    "lint": "phpcs"
+  },
+  "authors": [
+    {
+      "name": "1815",
+      "email": "it@1815.nl"
+    }
+  ],
+  "minimum-stability": "dev",
+  "require": {
+    "php": "^8.0",
+    "twig/twig": "3.x-dev"
+  },
+  "config": {
+    "allow-plugins": {
+      "dealerdirect/phpcodesniffer-composer-installer": true
+    }
+  }
+}
