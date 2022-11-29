@@ -7,10 +7,12 @@
 
 namespace AchttienVijftien\Tile;
 
+use AchttienVijftien\Tile\Twig\Post;
 use Twig\Environment;
 use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
 use Twig\Error\SyntaxError;
+use Twig\Extension\DebugExtension;
 use Twig\Loader\FilesystemLoader;
 
 /**
@@ -37,8 +39,11 @@ class TemplateLoader {
 					get_stylesheet_directory() . "/$template_path",
 					get_template_directory() . "/$template_path",
 				]
-			)
+			),
+			[ 'debug' => 'local' === wp_get_environment_type() ]
 		);
+
+		$this->twig->addExtension( new DebugExtension() );
 	}
 
 	/**
@@ -127,8 +132,8 @@ class TemplateLoader {
 		global $wp_the_query;
 
 		$globals['query_vars'] = (array) $wp_the_query->query_vars;
-		$globals['posts']      = $wp_the_query->posts;
-		$globals['post']       = $wp_the_query->post ?? null;
+		$globals['posts']      = array_map( fn( $post ) => new Post( $post ), $wp_the_query->posts );
+		$globals['post']       = $wp_the_query->post ? new Post( $wp_the_query->post ) : null;
 
 		if ( $wp_the_query->is_single() || $wp_the_query->is_page() ) {
 			$globals['more']   = 1;
