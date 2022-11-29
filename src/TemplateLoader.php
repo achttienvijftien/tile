@@ -69,7 +69,7 @@ class TemplateLoader {
 	}
 
 	/**
-	 * Changes the file extension for all templates from .php to .twig.
+	 * Changes the file extension for all templates from .php to .html.twig.
 	 *
 	 * @param mixed $templates Templates.
 	 *
@@ -78,7 +78,7 @@ class TemplateLoader {
 	public function rename_templates( mixed $templates ): mixed {
 		if ( is_array( $templates ) ) {
 			return array_map(
-				fn( $template ) => str_replace( '.php', '.twig', $template ),
+				fn( $template ) => str_replace( '.php', '.html.twig', $template ),
 				$templates
 			);
 		}
