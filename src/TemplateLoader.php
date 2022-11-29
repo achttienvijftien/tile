@@ -78,7 +78,7 @@ class TemplateLoader {
 	public function rename_templates( mixed $templates ): mixed {
 		if ( is_array( $templates ) ) {
 			return array_map(
-				fn( $template ) => str_replace( '.php', '.html.twig', $template ),
+				fn( $template ) => 'templates/' . str_replace( '.php', '.html.twig', $template ),
 				$templates
 			);
 		}
@@ -111,7 +111,7 @@ class TemplateLoader {
 	 * @return void
 	 */
 	private function render_template( string $template ): void {
-		$template_roots = [ get_stylesheet_directory(), get_template_directory() ];
+		$template_roots = [ get_stylesheet_directory() . '/templates', get_template_directory() . '/templates' ];
 
 		$template = str_replace( $template_roots, '', $template );
 
