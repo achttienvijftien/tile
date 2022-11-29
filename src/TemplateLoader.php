@@ -34,8 +34,8 @@ class TemplateLoader {
 		$this->twig = new Environment(
 			new FilesystemLoader(
 				[
-					get_template_directory() . "/$template_path",
 					get_stylesheet_directory() . "/$template_path",
+					get_template_directory() . "/$template_path",
 				]
 			)
 		);
