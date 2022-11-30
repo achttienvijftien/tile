@@ -13,3 +13,13 @@ use AchttienVijftien\Tile\TemplateLoader;
 
 ( new TemplateLoader() )->add_hooks();
 
+/**
+ * Setup theme
+ *
+ * @return void
+ */
+function theme_setup(): void {
+	add_theme_support( 'title-tag' );
+}
+
+add_action( 'after_setup_theme', 'AchttienVijftien\Tile\Test\theme_setup' );
