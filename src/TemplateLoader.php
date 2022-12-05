@@ -7,6 +7,7 @@
 
 namespace AchttienVijftien\Tile;
 
+use AchttienVijftien\Tile\Context\ContextExtension;
 use AchttienVijftien\Tile\Extension\TemplateExtension;
 use AchttienVijftien\Tile\Twig\Post;
 use Twig\Environment;
@@ -46,6 +47,7 @@ class TemplateLoader {
 
 		$this->twig->addExtension( new DebugExtension() );
 		$this->twig->addExtension( new TemplateExtension() );
+		$this->twig->addExtension( new ContextExtension() );
 	}
 
 	/**

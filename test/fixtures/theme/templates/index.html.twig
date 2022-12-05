@@ -2,4 +2,7 @@
 
 {% block content %}
     {{ post.content.raw }}
+
+    {% set test = getContext('test') %}
+    {{ test.foo }}
 {% endblock %}
