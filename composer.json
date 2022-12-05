@@ -13,6 +13,11 @@
       "AchttienVijftien\\Tile\\": "src/"
     }
   },
+  "autoload-dev": {
+    "psr-4": {
+      "AchttienVijftien\\Tile\\Test\\": "test/php/"
+    }
+  },
   "scripts": {
     "format": "phpcbf --report-summary --report-source",
     "lint": "phpcs"
