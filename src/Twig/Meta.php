@@ -41,12 +41,25 @@ class Meta {
 	 * Meta constructor.
 	 *
 	 * @param string $object_type Object type (post, user, term).
-	 * @param int    $object_id   Object ID.
+	 * @param int $object_id Object ID.
 	 */
 	public function __construct( string $object_type, int $object_id ) {
 		$this->object_type    = $object_type;
 		$this->object_id      = $object_id;
 		$this->object_subtype = get_object_subtype( $object_type, $object_id );
+	}
+
+	/**
+	 * Overloading isset(); always returns true.
+	 *
+	 * @param string $meta_key Meta key.
+	 *
+	 * @return bool
+	 * @todo: find and implement a better way to check whether a meta key exists.
+	 *
+	 */
+	public function __isset( string $meta_key ): bool {
+		return true;
 	}
 
 	/**
@@ -57,7 +70,7 @@ class Meta {
 	 * @return mixed
 	 */
 	public function __get( string $meta_key ) {
-		$value         = get_metadata( $this->object_type, $this->object_id, $meta_key );
+		$value = get_metadata( $this->object_type, $this->object_id, $meta_key );
 		$meta_key_data = $this->get_meta_key_data( $meta_key );
 		$single        = boolval( $meta_key_data['single'] ?? false );
 
