@@ -228,12 +228,18 @@ class Post {
 	}
 
 	/**
-	 * Returns the ID of the featured image or 0 if not set.
+	 * Returns the featured image or null if not set.
 	 *
-	 * @return int
+	 * @return Image|null
 	 */
-	public function featured_media(): int {
-		return (int) get_post_thumbnail_id( $this->post->ID );
+	public function featured_media(): ?Image {
+		$image_id = (int) get_post_thumbnail_id( $this->post->ID );
+
+		if ( 0 === $image_id ) {
+			return null;
+		}
+
+		return new Image( $image_id );
 	}
 
 	/**
@@ -365,5 +371,4 @@ class Post {
 
 		return mysql_to_rfc3339( $date_gmt );
 	}
-
 }
