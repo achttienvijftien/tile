@@ -15,6 +15,7 @@ use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
 use Twig\Error\SyntaxError;
 use Twig\Extension\DebugExtension;
+use Twig\Extension\ExtensionInterface;
 use Twig\Loader\FilesystemLoader;
 
 /**
@@ -45,9 +46,34 @@ class TemplateLoader {
 			[ 'debug' => 'local' === wp_get_environment_type() ]
 		);
 
+		$this->add_extensions();
+	}
+
+	/**
+	 * Adds extensions to Twig.
+	 *
+	 * @return void
+	 */
+	private function add_extensions(): void {
+		// Core Tile extensions.
 		$this->twig->addExtension( new DebugExtension() );
 		$this->twig->addExtension( new TemplateExtension() );
 		$this->twig->addExtension( new ContextExtension() );
+
+		// Third party extensions.
+		$extensions = apply_filters( 'tile_twig_extensions', [] );
+		foreach ( $extensions as $extension ) {
+			if ( ! in_array( ExtensionInterface::class, class_implements( $extension ) ) ) {
+				continue;
+			}
+
+			$extension_instance = $extension;
+			if ( ! is_object( $extension_instance ) ) {
+				$extension_instance = new $extension_instance;
+			}
+
+			$this->twig->addExtension( $extension_instance );
+		}
 	}
 
 	/**
@@ -132,6 +158,11 @@ class TemplateLoader {
 		}
 	}
 
+	/**
+	 * Sets global context.
+	 *
+	 * @return array
+	 */
 	private function get_globals(): array {
 		global $wp_the_query;
 
