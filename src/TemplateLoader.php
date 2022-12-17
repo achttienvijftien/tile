@@ -10,12 +10,14 @@ namespace AchttienVijftien\Tile;
 use AchttienVijftien\Tile\Context\ContextExtension;
 use AchttienVijftien\Tile\Extension\TemplateExtension;
 use AchttienVijftien\Tile\Twig\Post;
+use AchttienVijftien\Tile\Twig\Term;
 use Twig\Environment;
 use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
 use Twig\Error\SyntaxError;
 use Twig\Extension\DebugExtension;
 use Twig\Loader\FilesystemLoader;
+use WP_Term;
 
 /**
  * Class TemplateLoader
@@ -146,6 +148,11 @@ class TemplateLoader {
 
 		if ( $wp_the_query->is_author() ) {
 			$globals['authordata'] = get_userdata( get_queried_object_id() );
+		}
+
+		$queried_object = get_queried_object();
+		if ( $queried_object instanceof WP_Term ) {
+			$globals['term'] = new Term( $queried_object );
 		}
 
 		return $globals;
