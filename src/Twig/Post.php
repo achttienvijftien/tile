@@ -7,6 +7,7 @@
 
 namespace AchttienVijftien\Tile\Twig;
 
+use WP_Error;
 use WP_Post;
 
 /**
@@ -340,23 +341,23 @@ class Post {
 	}
 
 	/**
-	 * Get term IDs in $taxonony associated with post.
+	 * Get terms in $taxonony associated with post.
 	 *
 	 * @param string $taxonomy Taxonomy name.
 	 *
 	 * @return array
 	 */
-	protected function terms( string $taxonomy ): array {
+	public function terms( string $taxonomy ): array {
 		$terms = get_the_terms( $this->post, $taxonomy );
 
-		return $terms ? array_values( wp_list_pluck( $terms, 'term_id' ) ) : [];
+		return $terms && ! $terms instanceof WP_Error ? array_map( fn( $term ) => new Term( $term ), $terms ) : [];
 	}
 
 	/**
 	 * Returns $date_gmt as rfc3339 date, or null if invalid.
 	 *
-	 * @param string  $date_gmt Date (GMT timezone).
-	 * @param ?string $date     Date (Local timezone).
+	 * @param string $date_gmt Date (GMT timezone).
+	 * @param ?string $date Date (Local timezone).
 	 *
 	 * @return string|null
 	 */
