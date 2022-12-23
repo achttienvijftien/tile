@@ -220,12 +220,12 @@ class Post {
 	}
 
 	/**
-	 * Returns the author ID or 0 if not set.
+	 * Returns the author or null if not set
 	 *
-	 * @return int
+	 * @return User
 	 */
-	public function author(): int {
-		return (int) $this->post->post_author;
+	public function author(): User {
+		return new User( (int) $this->post->post_author );
 	}
 
 	/**
