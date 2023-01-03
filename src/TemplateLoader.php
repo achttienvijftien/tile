@@ -11,6 +11,7 @@ use AchttienVijftien\Tile\Context\ContextExtension;
 use AchttienVijftien\Tile\Extension\TemplateExtension;
 use AchttienVijftien\Tile\Twig\Post;
 use AchttienVijftien\Tile\Twig\Term;
+use AchttienVijftien\Tile\Wrapper;
 use Twig\Environment;
 use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
@@ -18,6 +19,7 @@ use Twig\Error\SyntaxError;
 use Twig\Extension\DebugExtension;
 use Twig\Extension\ExtensionInterface;
 use Twig\Loader\FilesystemLoader;
+use WP_Post;
 use WP_Term;
 
 /**
@@ -169,8 +171,8 @@ class TemplateLoader {
 		global $wp_the_query;
 
 		$globals['query_vars'] = (array) $wp_the_query->query_vars;
-		$globals['posts']      = array_map( fn( $post ) => new Post( $post ), $wp_the_query->posts );
-		$globals['post']       = $wp_the_query->post ? new Post( $wp_the_query->post ) : null;
+		$globals['posts']      = Wrapper::wrap_multiple( $wp_the_query->posts );
+		$globals['post']       = $wp_the_query->post ? Wrapper::wrap( $wp_the_query->post ) : null;
 
 		if ( $wp_the_query->is_single() || $wp_the_query->is_page() ) {
 			$globals['more']   = 1;
