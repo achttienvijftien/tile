@@ -7,18 +7,9 @@
 
 namespace AchttienVijftien\Tile;
 
-use AchttienVijftien\Tile\Context\ContextExtension;
-use AchttienVijftien\Tile\Extension\TemplateExtension;
 use AchttienVijftien\Tile\Twig\Post;
 use AchttienVijftien\Tile\Twig\Term;
 use AchttienVijftien\Tile\Wrapper;
-use Twig\Environment;
-use Twig\Error\LoaderError;
-use Twig\Error\RuntimeError;
-use Twig\Error\SyntaxError;
-use Twig\Extension\DebugExtension;
-use Twig\Extension\ExtensionInterface;
-use Twig\Loader\FilesystemLoader;
 use WP_Post;
 use WP_Term;
 
@@ -28,11 +19,11 @@ use WP_Term;
 class TemplateLoader {
 
 	/**
-	 * Twig instance.
+	 * Renderer instance.
 	 *
-	 * @var Environment
+	 * @var Renderer
 	 */
-	private Environment $twig;
+	private Renderer $renderer;
 
 	/**
 	 * TemplateLoader constructor.
@@ -40,44 +31,7 @@ class TemplateLoader {
 	 * @param string $template_path Template path, relative to theme root.
 	 */
 	public function __construct( string $template_path = 'templates' ) {
-		$this->twig = new Environment(
-			new FilesystemLoader(
-				[
-					get_stylesheet_directory() . "/$template_path",
-					get_template_directory() . "/$template_path",
-				]
-			),
-			[ 'debug' => 'local' === wp_get_environment_type() ]
-		);
-
-		$this->add_extensions();
-	}
-
-	/**
-	 * Adds extensions to Twig.
-	 *
-	 * @return void
-	 */
-	private function add_extensions(): void {
-		// Core Tile extensions.
-		$this->twig->addExtension( new DebugExtension() );
-		$this->twig->addExtension( new TemplateExtension() );
-		$this->twig->addExtension( new ContextExtension() );
-
-		// Third party extensions.
-		$extensions = apply_filters( 'tile_twig_extensions', [] );
-		foreach ( $extensions as $extension ) {
-			if ( ! in_array( ExtensionInterface::class, class_implements( $extension ) ) ) {
-				continue;
-			}
-
-			$extension_instance = $extension;
-			if ( ! is_object( $extension_instance ) ) {
-				$extension_instance = new $extension_instance;
-			}
-
-			$this->twig->addExtension( $extension_instance );
-		}
+		$this->renderer = Renderer::get_instance( $template_path );
 	}
 
 	/**
@@ -104,7 +58,7 @@ class TemplateLoader {
 		add_filter( 'singular_template_hierarchy', [ $this, 'rename_templates' ] );
 		add_filter( 'tag_template_hierarchy', [ $this, 'rename_templates' ] );
 		add_filter( 'taxonomy_template_hierarchy', [ $this, 'rename_templates' ] );
-		add_filter( 'template_include', [ $this, 'template_include' ] );
+		add_filter( 'template_include', [ $this, 'template_include' ], 999 );
 	}
 
 	/**
@@ -116,13 +70,14 @@ class TemplateLoader {
 	 */
 	public function rename_templates( mixed $templates ): mixed {
 		if ( is_array( $templates ) ) {
-			return array_map(
-				fn( $template ) => 'templates/' . str_replace( '.php', '.html.twig', $template ),
-				$templates
-			);
+			$expanded_templates = [];
+			foreach ( $templates as $template ) {
+				$expanded_templates[] = 'templates/' . str_replace( '.php', '.html.twig', $template );
+				$expanded_templates[] = $template;
+			}
 		}
 
-		return $templates;
+		return $expanded_templates;
 	}
 
 	/**
@@ -133,6 +88,10 @@ class TemplateLoader {
 	 * @return bool|string
 	 */
 	public function template_include( mixed $template ): bool|string {
+		if ( ! str_ends_with( $template, '.html.twig' ) ) {
+			return $template;
+		}
+
 		if ( is_string( $template ) && ! empty( $template ) ) {
 			$this->render_template( $template );
 
@@ -154,12 +113,8 @@ class TemplateLoader {
 
 		$template = str_replace( $template_roots, '', $template );
 
-		try {
-			// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- twig does its own escaping
-			echo $this->twig->load( $template )->render( $this->get_globals() );
-		} catch ( LoaderError|RuntimeError|SyntaxError $error ) {
-			wp_die( esc_html( $error->getMessage() ) );
-		}
+		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- twig does its own escaping
+		echo $this->renderer->render( $template, $this->get_globals() );
 	}
 
 	/**

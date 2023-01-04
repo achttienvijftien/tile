@@ -5,7 +5,7 @@
 
 namespace AchttienVijftien\Tile;
 
-use AchttienVijtien\Tile\Wrapper;
+use AchttienVijftien\Tile\Wrapper;
 
 /**
  * Class Query.
