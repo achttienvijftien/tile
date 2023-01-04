@@ -24,6 +24,9 @@ class TemplateExtension extends AbstractExtension {
 		return [
 			new TwigFunction( 'wp_head', 'wp_head' ),
 			new TwigFunction( 'wp_footer', 'wp_footer' ),
+			new TwigFunction( 'do_shortcode', 'do_shortcode', [
+				'is_safe' => [ 'html' ],
+			] ),
 		];
 	}
 }
