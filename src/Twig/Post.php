@@ -20,13 +20,13 @@ class Post {
 	 *
 	 * @var WP_Post|null
 	 */
-	private ?WP_Post $post;
+	protected ?WP_Post $post;
 	/**
 	 * Post meta accessor.
 	 *
 	 * @var Meta
 	 */
-	private Meta $meta;
+	protected Meta $meta;
 
 	/**
 	 * Post constructor.

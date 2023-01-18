@@ -7,6 +7,7 @@
 
 namespace AchttienVijftien\Tile\Extension;
 
+use AchttienVijftien\Tile\Twig\Menu;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 
@@ -27,6 +28,9 @@ class TemplateExtension extends AbstractExtension {
 			new TwigFunction( 'do_shortcode', 'do_shortcode', [
 				'is_safe' => [ 'html' ],
 			] ),
+			new TwigFunction( 'get_nav_menu', function ( string $theme_location ) {
+				return new Menu( $theme_location );
+			} ),
 		];
 	}
 }

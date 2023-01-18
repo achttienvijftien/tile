@@ -13,19 +13,11 @@ namespace AchttienVijftien\Tile\Twig;
 class Image {
 
 	/**
-	 * The image id id.
-	 *
-	 * @var int
-	 */
-	private int $image_id;
-
-	/**
 	 * Image constructor.
 	 *
 	 * @param int $image_id image ID.
 	 */
-	public function __construct( int $image_id ) {
-		$this->image_id = $image_id;
+	public function __construct( private int $image_id ) {
 	}
 
 	/**
