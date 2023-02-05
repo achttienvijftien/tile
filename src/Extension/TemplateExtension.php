@@ -31,6 +31,7 @@ class TemplateExtension extends AbstractExtension {
 			new TwigFunction( 'get_nav_menu', function ( string $theme_location ) {
 				return new Menu( $theme_location );
 			} ),
+			new TwigFunction( 'action', 'do_action' ),
 		];
 	}
 }
