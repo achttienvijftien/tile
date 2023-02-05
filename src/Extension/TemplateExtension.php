@@ -32,6 +32,9 @@ class TemplateExtension extends AbstractExtension {
 				return new Menu( $theme_location );
 			} ),
 			new TwigFunction( 'action', 'do_action' ),
+			new TwigFunction( 'body_class', function ( string $class = '' ) {
+				return body_class( $class );
+			} ),
 		];
 	}
 }
