@@ -182,7 +182,10 @@ class Post {
 	 */
 	public function content(): Rendered {
 		$rendered = '';
-		if ( ! post_password_required( $this->post ) ) {
+
+		if ( post_password_required( $this->post ) ) {
+			$rendered = apply_filters( 'the_password_form', get_the_password_form( $this->post ), $this->post );
+		} else {
 			$rendered = apply_filters( 'the_content', $this->post->post_content );
 		}
 
