@@ -7,6 +7,7 @@
 
 namespace AchttienVijftien\Tile;
 
+use AchttienVijftien\Tile\Twig\Pagination;
 use AchttienVijftien\Tile\Twig\Post;
 use AchttienVijftien\Tile\Twig\Term;
 use AchttienVijftien\Tile\Wrapper;
@@ -128,6 +129,7 @@ class TemplateLoader {
 		$globals['query_vars'] = (array) $wp_the_query->query_vars;
 		$globals['posts']      = Wrapper::wrap_multiple( $wp_the_query->posts );
 		$globals['post']       = $wp_the_query->post ? Wrapper::wrap( $wp_the_query->post ) : null;
+		$globals['pagination'] = new Pagination( $wp_the_query );
 
 		if ( $wp_the_query->is_single() || $wp_the_query->is_page() ) {
 			$globals['more']   = 1;

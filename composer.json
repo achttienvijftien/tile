@@ -5,7 +5,8 @@
   "require-dev": {
     "achttienvijftien/building-techniques": "dev-main",
     "dealerdirect/phpcodesniffer-composer-installer": "*",
-    "phpcompatibility/phpcompatibility-wp": "*"
+    "phpcompatibility/phpcompatibility-wp": "*",
+    "phpunit/phpunit": "^10.1"
   },
   "license": "GPL-3.0-or-later",
   "autoload": {
@@ -20,7 +21,8 @@
   },
   "scripts": {
     "format": "phpcbf --report-summary --report-source",
-    "lint": "phpcs"
+    "lint": "phpcs",
+    "test": "phpunit"
   },
   "authors": [
     {

@@ -8,6 +8,7 @@
 namespace AchttienVijftien\Tile\Extension;
 
 use AchttienVijftien\Tile\Twig\Menu;
+use AchttienVijftien\Tile\Twig\Pagination;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 
