@@ -160,7 +160,7 @@ class Post {
 	 * @return string
 	 */
 	public function link(): string {
-		return get_post_permalink( $this->post );
+		return get_permalink( $this->post );
 	}
 
 	/**
