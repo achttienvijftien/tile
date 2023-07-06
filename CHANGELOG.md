@@ -7,6 +7,6 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
-### Fix
+### Fixed
 
 - Fixed fatal error when an user_id from a deleted user is used as post author.
