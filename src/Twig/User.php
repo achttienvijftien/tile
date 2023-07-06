@@ -33,11 +33,13 @@ class User {
 			$this->user = $user;
 		} elseif ( is_numeric( $user ) ) {
 			$this->user = get_user_by( 'ID', $user ) ?: null;
-		} else {
+		}
+
+		if ( ! $this->user ) {
 			$this->user = new WP_User( (object) [] );
 		}
-		
-		$this->meta = $this->user->ID ? new Meta( 'user', $this->user->ID ) : null;
+
+		$this->meta = new Meta( 'user', $this->user->ID );
 	}
 
 	/**
@@ -212,7 +214,7 @@ class User {
 	 */
 	public function post_count( $post_type = 'any', $public_only = false ): int {
 		if ( 'any' !== $post_type ) {
-			return  $this->user->ID ? (int) count_user_posts( $this->user->ID, $post_type, $public_only ) : 0;
+			return $this->user->ID ? (int) count_user_posts( $this->user->ID, $post_type, $public_only ) : 0;
 		}
 
 		return (int) count( $this->user_posts( $post_type ) );
