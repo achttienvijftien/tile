@@ -14,14 +14,14 @@ class User {
 	 *
 	 * @var WP_User|null
 	 */
-	private ?WP_User $term;
+	private ?WP_User $user;
 
 	/**
 	 * User meta accessor.
 	 *
-	 * @var Meta
+	 * @var Meta|null
 	 */
-	private Meta $meta;
+	private ?Meta $meta;
 
 	/**
 	 * User constructor.
@@ -32,8 +32,10 @@ class User {
 		if ( $user instanceof WP_User ) {
 			$this->user = $user;
 		} elseif ( is_numeric( $user ) ) {
-			$this->user = get_user_by( 'ID', $user );
-		} else {
+			$this->user = get_user_by( 'ID', $user ) ?: null;
+		}
+
+		if ( ! $this->user ) {
 			$this->user = new WP_User( (object) [] );
 		}
 
@@ -55,7 +57,7 @@ class User {
 	 * @return string
 	 */
 	public function username(): string {
-		return $this->user->user_login;
+		return $this->user->user_login ?? '';
 	}
 
 	/**
@@ -64,15 +66,15 @@ class User {
 	 * @return string
 	 */
 	public function name(): string {
-		return $this->user->display_name;
+		return $this->user->display_name ?? '';
 	}
 
 	/**
 	 * Returns the meta object.
 	 *
-	 * @return Meta
+	 * @return Meta|null
 	 */
-	public function meta(): Meta {
+	public function meta(): ?Meta {
 		return $this->meta;
 	}
 
@@ -100,7 +102,7 @@ class User {
 	 * @return string
 	 */
 	public function email(): string {
-		return $this->user->user_email;
+		return $this->user->user_email ?? '';
 	}
 
 	/**
@@ -109,7 +111,7 @@ class User {
 	 * @return string
 	 */
 	public function url(): string {
-		return $this->user->user_url;
+		return $this->user->user_url ?? '';
 	}
 
 	/**
@@ -127,7 +129,7 @@ class User {
 	 * @return string
 	 */
 	public function link(): string {
-		return get_author_posts_url( $this->user->ID );
+		return $this->user->ID ? get_author_posts_url( $this->user->ID ) : '';
 	}
 
 	/**
@@ -136,7 +138,7 @@ class User {
 	 * @return string
 	 */
 	public function locale(): string {
-		return get_user_locale( $this->user->ID );
+		return $this->user->ID ? get_user_locale( $this->user->ID ) : '';
 	}
 
 	/**
@@ -145,7 +147,7 @@ class User {
 	 * @return string
 	 */
 	public function nickname(): string {
-		return $this->meta->nickname[0] ?? '';
+		return $this->meta ? $this->meta->nickname[0] ?? '' : '';
 	}
 
 	/**
@@ -154,7 +156,7 @@ class User {
 	 * @return string
 	 */
 	public function slug(): string {
-		return $this->user->user_nicename;
+		return $this->user->user_nicename ?? '';
 	}
 
 	/**
@@ -163,7 +165,7 @@ class User {
 	 * @return string
 	 */
 	public function registered_date(): string {
-		return $this->user->user_registered;
+		return $this->user->user_registered ?? '';
 	}
 
 	/**
@@ -172,7 +174,7 @@ class User {
 	 * @return array
 	 */
 	public function roles(): array {
-		return $this->user->roles;
+		return $this->user->roles ?? [];
 	}
 
 	/**
@@ -181,7 +183,7 @@ class User {
 	 * @return string
 	 */
 	public function password(): string {
-		return $this->user->user_pass;
+		return $this->user->user_pass ?? '';
 	}
 
 	/**
@@ -190,7 +192,7 @@ class User {
 	 * @return array
 	 */
 	public function capabilities(): array {
-		return $this->user->allcaps;
+		return $this->user->allcaps ?? [];
 	}
 
 	/**
@@ -199,7 +201,7 @@ class User {
 	 * @return string
 	 */
 	public function avatar_url(): string {
-		return get_avatar_url( $this->user->ID );
+		return $this->user->ID ? get_avatar_url( $this->user->ID ) : '';
 	}
 
 	/**
@@ -212,7 +214,7 @@ class User {
 	 */
 	public function post_count( $post_type = 'any', $public_only = false ): int {
 		if ( 'any' !== $post_type ) {
-			return (int) count_user_posts( $this->user->ID, $post_type, $public_only );
+			return $this->user->ID ? (int) count_user_posts( $this->user->ID, $post_type, $public_only ) : 0;
 		}
 
 		return (int) count( $this->user_posts( $post_type ) );
@@ -248,6 +250,10 @@ class User {
 	 * @return int[]|\WP_Post[]
 	 */
 	private function user_posts( $post_type ): array {
+		if ( ! $this->user->ID ) {
+			return [];
+		}
+
 		return get_posts(
 			[
 				'author'         => $this->user->ID,
