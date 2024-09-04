@@ -21,6 +21,20 @@ class Pagination {
 	private array $page_cache = [];
 
 	/**
+	 * WP Query.
+	 *
+	 * @var WP_Query
+	 */
+	private WP_Query $query;
+
+	/**
+	 * Pages object.
+	 *
+	 * @var Pages
+	 */
+	private Pages $pages;
+
+	/**
 	 * Constructor.
 	 *
 	 * @param WP_Query $wp_query the wp query.
