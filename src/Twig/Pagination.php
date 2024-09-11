@@ -33,7 +33,6 @@ class Pagination {
 	 * @param WP_Query $wp_query the wp query.
 	 */
 	public function __construct( private WP_Query $wp_query ) {
-		$this->query = $wp_query;
 		$this->pages = new Pages( $this );
 	}
 
