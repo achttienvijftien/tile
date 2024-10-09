@@ -34,6 +34,19 @@ class Wrapper {
 			return new $class( $object );
 		}
 
+		// if object is taxonomy term.
+		if ( ( $object_type && 'term' === $object_type ) || $object instanceof WP_Term ) {
+			// if object is int, convert into WP_Term.
+			if ( is_numeric( $object ) ) {
+				$object = get_term( $object );
+			}
+
+			$class_map = apply_filters( 'tile_taxonomy_term_class_mapping', [] );
+			$class     = $class_map[ $object->taxonomy ] ?? Term::class;
+
+			return new $class( $object );
+		}
+
 		return $object;
 	}
 
