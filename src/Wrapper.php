@@ -47,6 +47,19 @@ class Wrapper {
 			return new $class( $object );
 		}
 
+		// if object is user.
+		if ( ( $object_type && 'user' === $object_type ) || $object instanceof WP_User ) {
+			// if object is int, convert into WP_Term.
+			if ( is_numeric( $object ) ) {
+				$object = get_user_by( 'ID', $object );
+			}
+
+			$class_map = apply_filters( 'tile_user_class_mapping', [] );
+			$class     = $class_map[ current( $object->roles ) ] ?? User::class;
+
+			return new $class( $object );
+		}
+
 		return $object;
 	}
 
