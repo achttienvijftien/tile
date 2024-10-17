@@ -169,15 +169,6 @@ class User {
 	}
 
 	/**
-	 * Returns the user's roles.
-	 *
-	 * @return array
-	 */
-	public function roles(): array {
-		return $this->user->roles ?? [];
-	}
-
-	/**
 	 * Returns the user's password.
 	 *
 	 * @return string
@@ -207,8 +198,8 @@ class User {
 	/**
 	 * Returns the user's post count.
 	 *
-	 * @param mixed $post_type the post type(s), any counts all post types.
-	 * @param bool $public_only Whether to only return counts for public posts.
+	 * @param mixed $post_type   the post type(s), any counts all post types.
+	 * @param bool  $public_only Whether to only return counts for public posts.
 	 *
 	 * @return int
 	 */
@@ -218,6 +209,27 @@ class User {
 		}
 
 		return (int) count( $this->user_posts( $post_type ) );
+	}
+
+	/**
+	 * Returns the user's posts.
+	 *
+	 * @param mixed $post_type the post type(s). Any returns all post types.
+	 *
+	 * @return int[]|\WP_Post[]
+	 */
+	private function user_posts( $post_type ): array {
+		if ( ! $this->user->ID ) {
+			return [];
+		}
+
+		return get_posts(
+			[
+				'author'         => $this->user->ID,
+				'post_type'      => $post_type,
+				'posts_per_page' => - 1,
+			]
+		);
 	}
 
 	/**
@@ -243,24 +255,65 @@ class User {
 	}
 
 	/**
-	 * Returns the user's posts.
+	 * Checks whether the user has a specific role.
 	 *
-	 * @param mixed $post_type the post type(s). Any returns all post types.
+	 * @param string $role The user role.
 	 *
-	 * @return int[]|\WP_Post[]
+	 * @return bool
 	 */
-	private function user_posts( $post_type ): array {
-		if ( ! $this->user->ID ) {
-			return [];
+	public function has_role( string $role ): bool {
+		return in_array( $role, $this->user->roles, true );
+	}
+
+	/**
+	 * Gets role if user has it.
+	 *
+	 * @param string $role Role name to get.
+	 *
+	 * @return Role|null
+	 */
+	public function get_role( string $role ): ?Role {
+		if ( ! $this->has_role( $role ) ) {
+			return null;
 		}
 
-		return get_posts(
-			[
-				'author'         => $this->user->ID,
-				'post_type'      => $post_type,
-				'posts_per_page' => - 1,
-			]
+		$roles = $this->roles();
+
+		return $roles[ $role ] ?? null;
+	}
+
+	/**
+	 * Returns the user's roles.
+	 *
+	 * @return array
+	 */
+	public function roles(): array {
+		$role_classes = apply_filters( 'tile_user_role_class_mapping', [] );
+
+		return array_combine(
+			$this->user->roles,
+			array_map(
+				fn( $role ) => new ( $role_classes[ $role ] ?? UserRole::class )( $role, $this ),
+				$this->user->roles ?? []
+			)
 		);
+	}
+
+	/**
+	 * Removes role from user.
+	 *
+	 * @param string $role The role to remove.
+	 *
+	 * @return bool
+	 */
+	public function remove_role( string $role ): bool {
+		if ( ! $this->has_role( $role ) ) {
+			return false;
+		}
+
+		$this->user->remove_role( $role );
+
+		return true;
 	}
 }
 
