@@ -270,9 +270,9 @@ class User {
 	 *
 	 * @param string $role Role name to get.
 	 *
-	 * @return Role|null
+	 * @return UserRole|null
 	 */
-	public function get_role( string $role ): ?Role {
+	public function get_role( string $role ) {
 		if ( ! $this->has_role( $role ) ) {
 			return null;
 		}
