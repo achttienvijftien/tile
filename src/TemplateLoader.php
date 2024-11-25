@@ -8,11 +8,8 @@
 namespace AchttienVijftien\Tile;
 
 use AchttienVijftien\Tile\Twig\Pagination;
-use AchttienVijftien\Tile\Twig\Post;
 use AchttienVijftien\Tile\Twig\Term;
 use AchttienVijftien\Tile\Twig\User;
-use AchttienVijftien\Tile\Wrapper;
-use WP_Post;
 use WP_Term;
 
 /**
@@ -61,6 +58,7 @@ class TemplateLoader {
 		add_filter( 'tag_template_hierarchy', [ $this, 'rename_templates' ] );
 		add_filter( 'taxonomy_template_hierarchy', [ $this, 'rename_templates' ] );
 		add_filter( 'template_include', [ $this, 'template_include' ], 999 );
+		add_filter( 'theme_page_templates', [ $this, 'page_templates' ] );
 	}
 
 	/**
@@ -101,6 +99,42 @@ class TemplateLoader {
 		}
 
 		return get_stylesheet_directory() . '/index.php';
+	}
+
+	/**
+	 * Adds custom Twig page templates.
+	 *
+	 * @param array $templates Page templates.
+	 *
+	 * @return array|mixed
+	 */
+	public function page_templates( $templates ) {
+		if ( ! is_array( $templates ) ) {
+			return $templates;
+		}
+
+		$theme_directory = get_stylesheet_directory() . '/templates';
+		$file_extension  = '.html.twig';
+
+		$template_files = [];
+		if ( is_dir( $theme_directory ) ) {
+			$dir_iterator = new \RecursiveDirectoryIterator( $theme_directory );
+			$iterator     = new \RecursiveIteratorIterator( $dir_iterator );
+
+			foreach ( $iterator as $file ) {
+				if ( ! $file->isFile() || false === strrpos( $file->getFilename(), $file_extension ) ) {
+					continue;
+				}
+
+				if ( ! preg_match( '/\{#\s?Template Name:\s?(.*)\s?#\}/mi', $file->openFile(), $header ) ) {
+					continue;
+				}
+
+				$template_files[ $file->getFilename() ] = trim( $header[1] );
+			}
+		}
+
+		return array_merge( $templates, $template_files );
 	}
 
 	/**
