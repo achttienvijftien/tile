@@ -99,7 +99,7 @@ class Renderer {
 	 * Renders given template with given context loaded.
 	 *
 	 * @param string $template The template to render.
-	 * @param array $context The context to load.
+	 * @param array  $context  The context to load.
 	 *
 	 * @return string
 	 */
@@ -107,7 +107,13 @@ class Renderer {
 		try {
 			return $this->twig->load( $template )->render( $context );
 		} catch ( LoaderError|RuntimeError|SyntaxError $error ) {
-			wp_die( esc_html( $error->getMessage() ) );
+			wp_die(
+				esc_html(
+					$error->getMessage() .
+					' File: ' . ( $error->getSourceContext()?->getPath() ?: '"unknown file"' ) .
+					' on line ' . $error->getLine() . '.'
+				)
+			);
 		}
 	}
 }
