@@ -42,6 +42,14 @@ class Post {
 			$this->post = new WP_Post( (object) [] );
 		}
 
+		if (
+			empty( $this->post )
+			|| is_wp_error( $this->post )
+			|| ! ( $this->post instanceof WP_Post )
+		) {
+			$this->post->ID = 0;
+		}
+
 		$this->meta = new Meta( 'post', $this->post->ID );
 	}
 
