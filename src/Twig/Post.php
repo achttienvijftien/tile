@@ -39,14 +39,7 @@ class Post {
 		} elseif ( is_numeric( $post ) ) {
 			$this->post = get_post( $post );
 		} else {
-			$this->post = new WP_Post( (object) [] );
-		}
-
-		if (
-			empty( $this->post )
-			|| is_wp_error( $this->post )
-			|| ! ( $this->post instanceof WP_Post )
-		) {
+			$this->post     = new WP_Post( (object) [] );
 			$this->post->ID = 0;
 		}
 
