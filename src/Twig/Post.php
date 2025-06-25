@@ -39,7 +39,8 @@ class Post {
 		} elseif ( is_numeric( $post ) ) {
 			$this->post = get_post( $post );
 		} else {
-			$this->post = new WP_Post( (object) [] );
+			$this->post     = new WP_Post( (object) [] );
+			$this->post->ID = 0;
 		}
 
 		$this->meta = new Meta( 'post', $this->post->ID );
