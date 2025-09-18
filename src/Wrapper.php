@@ -6,7 +6,6 @@
 namespace AchttienVijftien\Tile;
 
 use AchttienVijftien\Tile\Twig\Post;
-use WP_Post;
 
 /**
  * Class Wrapper.
@@ -22,7 +21,7 @@ class Wrapper {
 	 */
 	public static function wrap( $object, ?string $object_type = null ) {
 		// if object is post.
-		if ( ( $object_type && 'post' === $object_type ) || $object instanceof WP_Post ) {
+		if ( ( $object_type && 'post' === $object_type ) || $object instanceof \WP_Post ) {
 			// if object is int, convert into WP_Post.
 			if ( is_numeric( $object ) ) {
 				$object = get_post( $object );
@@ -35,7 +34,7 @@ class Wrapper {
 		}
 
 		// if object is taxonomy term.
-		if ( ( $object_type && 'term' === $object_type ) || $object instanceof WP_Term ) {
+		if ( ( $object_type && 'term' === $object_type ) || $object instanceof \WP_Term ) {
 			// if object is int, convert into WP_Term.
 			if ( is_numeric( $object ) ) {
 				$object = get_term( $object );
