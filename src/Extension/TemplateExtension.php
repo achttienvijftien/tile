@@ -10,12 +10,24 @@ namespace AchttienVijftien\Tile\Extension;
 use AchttienVijftien\Tile\Twig\Menu;
 use AchttienVijftien\Tile\Twig\Pagination;
 use Twig\Extension\AbstractExtension;
+use Twig\TwigFilter;
 use Twig\TwigFunction;
 
 /**
  * Class TemplateExtension
  */
 class TemplateExtension extends AbstractExtension {
+
+	/**
+	 * Returns twig filters provided by the extension.
+	 *
+	 * @return TwigFilter[]
+	 */
+	public function getFilters(): array {
+		return [
+			new TwigFilter( 'wpautop', 'wpautop', [ 'is_safe' => [ 'html' ] ] ),
+		];
+	}
 
 	/**
 	 * Returns twig functions provided by the extension.
