@@ -41,7 +41,6 @@ class Menu {
 	 */
 	public function get_items(): ?array {
 		$menu = $this->get_menu();
-
 		if ( ! $menu ) {
 			return null;
 		}
@@ -57,49 +56,37 @@ class Menu {
 		// use WP internal function, this will save a lot of effort.
 		_wp_menu_item_classes_by_context( $nav_items );
 
-		$items_multi_level = [];
+		$items = [];
+
+		// First pass: create ALL MenuItem objects.
 		foreach ( $nav_items as $nav_item ) {
-			if ( ! isset( $items_multi_level[ $nav_item->ID ] ) ) {
-				$items_multi_level[ $nav_item->ID ] = [
-					'children'  => [],
-					'top_level' => ! $nav_item->menu_item_parent,
-				];
-			}
-
-			$items_multi_level[ $nav_item->ID ]['object'] = new MenuItem( $nav_item );
-
-			if ( empty( $nav_item->menu_item_parent ) ) {
-				continue;
-			}
-
-			if ( ! isset( $items_multi_level[ $nav_item->menu_item_parent ] ) ) {
-				$items_multi_level[ $nav_item->menu_item_parent ] = [
-					'children' => [],
-				];
-			}
-
-			$items_multi_level[ $nav_item->menu_item_parent ]['children'][] = $nav_item->ID;
+			$items[ $nav_item->ID ] = [
+				'object'   => new MenuItem( $nav_item ),
+				'parent'   => (int) $nav_item->menu_item_parent,
+				'children' => [],
+			];
 		}
 
-		$items_tree = [];
-		foreach ( $items_multi_level as $item_id => $item ) {
-			$item_object = $item['object'];
-			if ( ! empty( $item['top_level'] ) ) {
-				$items_tree[ $item_id ] = $item_object;
-			}
-
-			if ( empty( $item['children'] ) ) {
-				continue;
-			}
-
-			foreach ( $item['children'] as $item_child_id ) {
-				if ( empty( $items_multi_level[ $item_child_id ]['object'] ) ) {
-					continue;
-				}
-				$item_object->add_child( $items_multi_level[ $item_child_id ]['object'] );
+		// Second pass: assign children.
+		foreach ( $items as $id => $item ) {
+			if ( $item['parent'] && isset( $items[ $item['parent'] ] ) ) {
+				$items[ $item['parent'] ]['children'][] = $id;
 			}
 		}
 
-		return array_values( $items_tree );
+		// Build tree.
+		$tree = [];
+		foreach ( $items as $id => $item ) {
+			if ( $item['parent'] === 0 ) {
+				$tree[ $id ] = $item['object'];
+			}
+
+			foreach ( $item['children'] as $child_id ) {
+				$item['object']->add_child( $items[ $child_id ]['object'] );
+			}
+		}
+
+		return array_values( $tree );
 	}
+
 }
