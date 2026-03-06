@@ -12,6 +12,7 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ### Added
 
 - Current user in global
+- bbPress compatibility: register all `bbp_get_{$type}_template` filters to enable Twig template resolution for all bbPress template types
 
 ### Fixed
 

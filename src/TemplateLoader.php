@@ -7,6 +7,8 @@
 
 namespace AchttienVijftien\Tile;
 
+use AchttienVijftien\Tile\Compat\bbPress;
+use AchttienVijftien\Tile\Traits\RenamesTemplates;
 use AchttienVijftien\Tile\Twig\Pagination;
 use AchttienVijftien\Tile\Twig\Term;
 use AchttienVijftien\Tile\Twig\User;
@@ -16,6 +18,7 @@ use WP_Term;
  * Class TemplateLoader
  */
 class TemplateLoader {
+	use RenamesTemplates;
 
 	/**
 	 * Renderer instance.
@@ -31,6 +34,9 @@ class TemplateLoader {
 	 */
 	public function __construct( string $template_path = 'templates' ) {
 		$this->renderer = Renderer::get_instance( $template_path );
+
+		// initialize compatibility classes
+		( new bbPress() )->add_hooks();
 	}
 
 	/**
@@ -59,25 +65,6 @@ class TemplateLoader {
 		add_filter( 'taxonomy_template_hierarchy', [ $this, 'rename_templates' ] );
 		add_filter( 'template_include', [ $this, 'template_include' ], 999 );
 		add_filter( 'theme_page_templates', [ $this, 'page_templates' ] );
-	}
-
-	/**
-	 * Changes the file extension for all templates from .php to .html.twig.
-	 *
-	 * @param mixed $templates Templates.
-	 *
-	 * @return mixed
-	 */
-	public function rename_templates( mixed $templates ): mixed {
-		if ( is_array( $templates ) ) {
-			$expanded_templates = [];
-			foreach ( $templates as $template ) {
-				$expanded_templates[] = 'templates/' . str_replace( '.php', '.html.twig', $template );
-				$expanded_templates[] = $template;
-			}
-		}
-
-		return $expanded_templates;
 	}
 
 	/**
