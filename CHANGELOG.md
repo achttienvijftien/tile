@@ -17,3 +17,4 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ### Fixed
 
 - Fixed fatal error when an user_id from a deleted user is used as post author.
+- `composer lint` runs without errors, findings are fixed or ignored, without behaviour change

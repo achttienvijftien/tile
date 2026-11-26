@@ -81,16 +81,18 @@ class Image {
 		return get_the_title( $this->image_id );
 	}
 
+	// phpcs:disable Generic.Files.LineLength.TooLong
 	/**
 	 * Returns the full attachment.
 	 *
-	 * @param int $image_id Image id.
-	 * @param string $size Image size.
-	 * @param bol $icon Whether the image should fall back to a mime type icon
+	 * @param int    $image_id Image id.
+	 * @param string $size     Image size.
+	 * @param bool   $icon     Whether the image should fall back to a mime type icon.
 	 *
 	 * @return array
 	 */
 	private function get_attachment_image( int $image_id, string $size, bool $icon = false ): array {
+		// phpcs:enable Generic.Files.LineLength.TooLong
 		if ( ! $this->is_available_image_size( $size ) ) {
 			return [];
 		}

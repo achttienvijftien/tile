@@ -1,6 +1,6 @@
 <?php
 /**
- * bbPress
+ * Compatibility with bbPress.
  *
  * @package AchttienVijftien\Tile\Compat
  */
@@ -9,10 +9,12 @@ namespace AchttienVijftien\Tile\Compat;
 
 use AchttienVijftien\Tile\Traits\RenamesTemplates;
 
+// phpcs:disable PEAR.NamingConventions.ValidClassName.StartWithCapital
 /**
  * Class bbPress
  */
 class bbPress {
+	// phpcs:enable PEAR.NamingConventions.ValidClassName.StartWithCapital
 	use RenamesTemplates;
 
 	/**

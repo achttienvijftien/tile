@@ -1,4 +1,9 @@
 <?php
+/**
+ * UserRole
+ *
+ * @package AchttienVijftien\Tile\Twig
+ */
 
 namespace AchttienVijftien\Tile\Twig;
 
@@ -20,6 +25,7 @@ class UserRole {
 	 * Role constructor.
 	 *
 	 * @param string $role Role name.
+	 * @param User   $user User the role belongs to.
 	 */
 	public function __construct( string $role, protected User $user ) {
 		$this->role = get_role( $role );

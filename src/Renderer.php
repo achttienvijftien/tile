@@ -1,6 +1,8 @@
 <?php
 /**
  * Renderer
+ *
+ * @package AchttienVijftien\Tile
  */
 
 namespace AchttienVijftien\Tile;
@@ -52,7 +54,7 @@ class Renderer {
 	/**
 	 * Renderer constructor.
 	 *
-	 * @param string $template_path
+	 * @param string $template_path Template path, relative to theme root.
 	 */
 	private function __construct( string $template_path ) {
 		$this->twig = new Environment(
@@ -82,13 +84,13 @@ class Renderer {
 		// Third party extensions.
 		$extensions = apply_filters( 'tile_twig_extensions', [] );
 		foreach ( $extensions as $extension ) {
-			if ( ! in_array( ExtensionInterface::class, class_implements( $extension ) ) ) {
+			if ( ! in_array( ExtensionInterface::class, class_implements( $extension ), true ) ) {
 				continue;
 			}
 
 			$extension_instance = $extension;
 			if ( ! is_object( $extension_instance ) ) {
-				$extension_instance = new $extension_instance;
+				$extension_instance = new $extension_instance();
 			}
 
 			$this->twig->addExtension( $extension_instance );
@@ -106,7 +108,7 @@ class Renderer {
 	public function render( string $template, array $context = [] ): string {
 		try {
 			return $this->twig->load( $template )->render( $context );
-		} catch ( LoaderError|RuntimeError|SyntaxError $error ) {
+		} catch ( LoaderError | RuntimeError | SyntaxError $error ) {
 			wp_die(
 				esc_html(
 					$error->getMessage() .

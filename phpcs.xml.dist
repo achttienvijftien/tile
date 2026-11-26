@@ -10,8 +10,7 @@
     <arg name="extensions" value="php"/>
 
     <file>./src</file>
-    <file>./tests</file>
-    <file>./functions.php</file>
+    <file>./test</file>
 
     <rule ref="1815BuildingTechniques"/>
 

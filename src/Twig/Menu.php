@@ -15,6 +15,8 @@ use WP_Term;
 class Menu {
 
 	/**
+	 * Menu constructor.
+	 *
 	 * @param string $theme_location Theme location.
 	 */
 	public function __construct( private string $theme_location ) {
@@ -45,9 +47,10 @@ class Menu {
 			return null;
 		}
 
+		// phpcs:ignore PEAR.Functions.FunctionCallSignature.ContentAfterOpenBracket,PEAR.Functions.FunctionCallSignature.MultipleArguments
 		$nav_items = wp_get_nav_menu_items( $menu, [
 			'update_post_term_cache' => false,
-		] );
+		] ); // phpcs:ignore PEAR.Functions.FunctionCallSignature.CloseBracketLine
 
 		if ( empty( $nav_items ) ) {
 			return null;
@@ -77,7 +80,7 @@ class Menu {
 		// Build tree.
 		$tree = [];
 		foreach ( $items as $id => $item ) {
-			if ( $item['parent'] === 0 ) {
+			if ( 0 === $item['parent'] ) {
 				$tree[ $id ] = $item['object'];
 			}
 
