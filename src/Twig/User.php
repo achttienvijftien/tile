@@ -1,4 +1,9 @@
 <?php
+/**
+ * User
+ *
+ * @package AchttienVijftien\Tile\Twig
+ */
 
 namespace AchttienVijftien\Tile\Twig;
 
@@ -205,6 +210,7 @@ class User {
 	 */
 	public function post_count( $post_type = 'any', $public_only = false ): int {
 		if ( 'any' !== $post_type ) {
+			// phpcs:ignore Generic.Files.LineLength.TooLong
 			return $this->user->ID ? (int) count_user_posts( $this->user->ID, $post_type, $public_only ) : 0;
 		}
 

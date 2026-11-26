@@ -38,12 +38,14 @@ class TemplateExtension extends AbstractExtension {
 		return [
 			new TwigFunction( 'wp_head', 'wp_head' ),
 			new TwigFunction( 'wp_footer', 'wp_footer' ),
+			// phpcs:ignore PEAR.Functions.FunctionCallSignature.ContentAfterOpenBracket,PEAR.Functions.FunctionCallSignature.MultipleArguments
 			new TwigFunction( 'do_shortcode', 'do_shortcode', [
 				'is_safe' => [ 'html' ],
-			] ),
+			] ), // phpcs:ignore PEAR.Functions.FunctionCallSignature.CloseBracketLine
+			// phpcs:ignore PEAR.Functions.FunctionCallSignature.ContentAfterOpenBracket,PEAR.Functions.FunctionCallSignature.MultipleArguments
 			new TwigFunction( 'get_nav_menu', function ( string $theme_location ) {
 				return new Menu( $theme_location );
-			} ),
+			} ), // phpcs:ignore PEAR.Functions.FunctionCallSignature.CloseBracketLine
 			new TwigFunction( 'action', 'do_action' ),
 			new TwigFunction( 'body_class', 'body_class' ),
 		];

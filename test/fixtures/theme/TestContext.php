@@ -14,6 +14,8 @@ use AchttienVijftien\Tile\Context\ContextInterface;
  */
 class TestContext implements ContextInterface {
 	/**
+	 * Returns the test context.
+	 *
 	 * @inheritDoc
 	 */
 	public function get_context() {

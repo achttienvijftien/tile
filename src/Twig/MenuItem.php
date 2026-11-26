@@ -20,12 +20,15 @@ class MenuItem extends Post {
 	private array $children = [];
 
 	/**
+	 * Returns the menu item title.
+	 *
 	 * @return Rendered
 	 */
 	public function title(): Rendered {
 		return $this->post->title
 			? new Rendered(
 				$this->post->title,
+				// phpcs:ignore Generic.Files.LineLength.TooLong
 				apply_filters( 'nav_menu_item_title', apply_filters( 'the_title', $this->post->title ) )
 			)
 			: parent::title();
@@ -86,7 +89,7 @@ class MenuItem extends Post {
 	/**
 	 * Adds child, order of adding is preserved.
 	 *
-	 * @param MenuItem $child_item
+	 * @param MenuItem $child_item Child menu item.
 	 *
 	 * @return void
 	 */

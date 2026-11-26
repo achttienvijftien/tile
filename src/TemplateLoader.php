@@ -35,7 +35,7 @@ class TemplateLoader {
 	public function __construct( string $template_path = 'templates' ) {
 		$this->renderer = Renderer::get_instance( $template_path );
 
-		// initialize compatibility classes
+		// Initialize compatibility classes.
 		( new bbPress() )->add_hooks();
 	}
 
@@ -109,10 +109,12 @@ class TemplateLoader {
 			$iterator     = new \RecursiveIteratorIterator( $dir_iterator );
 
 			foreach ( $iterator as $file ) {
+				// phpcs:ignore Generic.Files.LineLength.TooLong
 				if ( ! $file->isFile() || false === strrpos( $file->getFilename(), $file_extension ) ) {
 					continue;
 				}
 
+				// phpcs:ignore Generic.Files.LineLength.TooLong
 				if ( ! preg_match( '/\{#\s?Template Name:\s?(.*)\s?#\}/mi', $file->openFile(), $header ) ) {
 					continue;
 				}
@@ -132,6 +134,7 @@ class TemplateLoader {
 	 * @return void
 	 */
 	private function render_template( string $template ): void {
+		// phpcs:ignore Generic.Files.LineLength.TooLong
 		$template_roots = [ get_stylesheet_directory() . '/templates', get_template_directory() . '/templates' ];
 
 		$template = str_replace( $template_roots, '', $template );
@@ -150,11 +153,13 @@ class TemplateLoader {
 
 		$current_user = wp_get_current_user();
 
+		// phpcs:disable Generic.Files.LineLength.TooLong
 		$globals['query_vars']   = (array) $wp_the_query->query_vars;
 		$globals['posts']        = Wrapper::wrap_multiple( $wp_the_query->posts );
 		$globals['post']         = $wp_the_query->post ? Wrapper::wrap( $wp_the_query->post ) : null;
 		$globals['current_user'] = $current_user->ID ? new User( wp_get_current_user() ) : null;
 		$globals['pagination']   = new Pagination( $wp_the_query );
+		// phpcs:enable Generic.Files.LineLength.TooLong
 
 		if ( $wp_the_query->is_single() || $wp_the_query->is_page() ) {
 			$globals['more']   = 1;

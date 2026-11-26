@@ -41,6 +41,7 @@ class Post {
 		}
 
 		if ( empty( $this->post ) ) {
+			// phpcs:ignore Generic.Formatting.MultipleStatementAlignment.NotSameWarning
 			$this->post = new WP_Post( (object) [] );
 			$this->post->ID = 0;
 		}
@@ -187,6 +188,7 @@ class Post {
 		$rendered = '';
 
 		if ( post_password_required( $this->post ) ) {
+			// phpcs:ignore Generic.Files.LineLength.TooLong
 			$rendered = apply_filters( 'the_password_form', get_the_password_form( $this->post ), $this->post );
 		} else {
 			$rendered = apply_filters( 'the_content', $this->post->post_content );
@@ -356,14 +358,15 @@ class Post {
 	public function terms( string $taxonomy ): array {
 		$terms = get_the_terms( $this->post, $taxonomy );
 
+		// phpcs:ignore Generic.Files.LineLength.TooLong
 		return $terms && ! $terms instanceof WP_Error ? array_map( fn( $term ) => new Term( $term ), $terms ) : [];
 	}
 
 	/**
 	 * Returns $date_gmt as rfc3339 date, or null if invalid.
 	 *
-	 * @param string $date_gmt Date (GMT timezone).
-	 * @param ?string $date Date (Local timezone).
+	 * @param string  $date_gmt Date (GMT timezone).
+	 * @param ?string $date     Date (Local timezone).
 	 *
 	 * @return string|null
 	 */

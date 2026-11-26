@@ -1,6 +1,8 @@
 <?php
 /**
  * Wrapper
+ *
+ * @package AchttienVijftien\Tile
  */
 
 namespace AchttienVijftien\Tile;
@@ -15,7 +17,8 @@ class Wrapper {
 	/**
 	 * Wraps object into Twig object.
 	 *
-	 * @param mixed $object The object to wrap.
+	 * @param mixed       $object      The object to wrap.
+	 * @param string|null $object_type Object type, 'post' or 'term'; detected when omitted.
 	 *
 	 * @return mixed
 	 */
@@ -52,7 +55,8 @@ class Wrapper {
 	/**
 	 * Wraps an array of objects into Twig object.
 	 *
-	 * @param array $objects Array of objects to wrap.
+	 * @param array       $objects     Array of objects to wrap.
+	 * @param string|null $object_type Object type, 'post' or 'term'; detected when omitted.
 	 *
 	 * @return array
 	 */
