@@ -55,6 +55,19 @@ class Renderer {
 	 * @param string $template_path
 	 */
 	private function __construct( string $template_path ) {
+		$container   = $this->service_container();
+		$auto_reload = $this->auto_reload( $container );
+
+		$options = apply_filters(
+			'tile_twig_environment_options',
+			[
+				'debug'       => 'local' === wp_get_environment_type(),
+				'auto_reload' => $auto_reload,
+				'cache'       => $this->compiled_template_directory( $container ),
+			],
+			$template_path
+		);
+
 		$this->twig = new Environment(
 			new FilesystemLoader(
 				[
@@ -62,10 +75,84 @@ class Renderer {
 					get_template_directory() . "/$template_path",
 				]
 			),
-			[ 'debug' => 'local' === wp_get_environment_type() ]
+			$options
 		);
 
 		$this->add_extensions();
+
+		do_action( 'tile_twig_environment', $this->twig, $template_path );
+	}
+
+	/**
+	 * Gets the 1815 service container when it is booted and exposes the kernel parameters.
+	 *
+	 * @return object|null
+	 */
+	private function service_container(): ?object {
+		$container = apply_filters( 'achttienvijftien/container', null );
+
+		if ( is_object( $container )
+			&& method_exists( $container, 'hasParameter' )
+			&& $container->hasParameter( 'kernel.cache_dir' )
+			&& $container->hasParameter( 'kernel.debug' )
+		) {
+			return $container;
+		}
+
+		return null;
+	}
+
+	/**
+	 * Decides whether templates are checked for changes; always while developing.
+	 *
+	 * @param object|null $container The service container.
+	 *
+	 * @return bool
+	 */
+	private function auto_reload( ?object $container ): bool {
+		$developing = $container
+			? (bool) $container->getParameter( 'kernel.debug' )
+			: 'local' === wp_get_environment_type();
+
+		if ( $developing ) {
+			return true;
+		}
+
+		if ( defined( 'TILE_TWIG_AUTO_RELOAD' ) ) {
+			return (bool) TILE_TWIG_AUTO_RELOAD;
+		}
+
+		return null === $container;
+	}
+
+	/**
+	 * Gets the writable directory for compiled templates, or false for no cache.
+	 *
+	 * @param object|null $container The service container.
+	 *
+	 * @return string|false
+	 */
+	private function compiled_template_directory( ?object $container ): string|false {
+		$directory = defined( 'TILE_TWIG_CACHE' ) ? TILE_TWIG_CACHE : true;
+
+		if ( false === $directory ) {
+			return false;
+		}
+
+		if ( ! is_string( $directory ) || '' === $directory ) {
+			if ( null === $container ) {
+				return false;
+			}
+
+			$cache_dir = $container->getParameter( 'kernel.cache_dir' );
+			$directory = untrailingslashit( $cache_dir ) . '/tile-twig';
+		}
+
+		if ( ! wp_mkdir_p( $directory ) || ! wp_is_writable( $directory ) ) {
+			return false;
+		}
+
+		return $directory;
 	}
 
 	/**
